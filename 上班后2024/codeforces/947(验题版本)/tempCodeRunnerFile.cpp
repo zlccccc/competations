@@ -1,0 +1,7 @@
+100
+babb
+abczzzzzzzzz
+abbczzzzzzzzz
+abbcccdzzdddeeeeezzz
+abbcccc
+abaaabbbbbbb

@@ -1,0 +1,177 @@
+// #pragma GCC optimize("Ofast,no-stack-protector,unroll-loops,fast-math")
+// #pragma GCC target("sse,sse2,sse3,ssse3,sse4.1,sse4.2,avx,avx2,popcnt,tune=native")
+#include <sstream>
+#include <fstream>
+#include <cstdio>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <set>
+#include <map>
+#include <string>
+#include <cstring>
+#include <stack>
+#include <queue>
+#include <cmath>
+#include <ctime>
+#include <utility>
+#include <cassert>
+#include <bitset>
+#include <functional>
+#include <random>
+using namespace std;
+#define REP(I,N) for (I=0;I<N;I++)
+#define rREP(I,N) for (I=N-1;I>=0;I--)
+#define rep(I,S,N) for (I=S;I<N;I++)
+#define rrep(I,S,N) for (I=N-1;I>=S;I--)
+#define FOR(I,S,N) for (I=S;I<=N;I++)
+#define rFOR(I,S,N) for (I=N;I>=S;I--)
+#define REP_(I,N) for (int I=0;I<N;I++)
+#define rREP_(I,N) for (int I=N-1;I>=0;I--)
+#define rep_(I,S,N) for (int I=S;I<N;I++)
+#define rrep_(I,S,N) for (int I=N-1;I>=S;I--)
+#define FOR_(I,S,N) for (int I=S;I<=N;I++)
+#define rFOR_(I,S,N) for (int I=N;I>=S;I--)
+
+#define DEBUG
+#ifdef DEBUG
+#define debug(...) fprintf(stderr, __VA_ARGS__)
+#define deputs(str) fprintf(stderr, "%s\n",str)
+#else
+#define debug(...)
+#define deputs(str)
+#endif // DEBUG
+typedef unsigned long long ULL;
+typedef unsigned long long ull;
+typedef unsigned int ui;
+typedef long long LL;
+typedef long long ll;
+typedef pair<int,int> pii;
+typedef pair<ll,ll> pll;
+const int INF=0x3f3f3f3f;
+const LL INFF=0x3f3f3f3f3f3f3f3fll;
+const LL maxn=1e6+107;
+const double pi=acos(-1.0);
+const double eps=0.0000000001;
+template<typename T>inline T gcd(T a, T b) {return b?gcd(b,a%b):a;}
+// template<typename T>inline void pr2(T x,int k=64) {ll i; REP(i,k) debug("%d",(x>>i)&1); putchar(' ');}
+template<typename T>inline void max_(T &A,T B) {(A<B) &&(A=B);}
+template<typename T>inline void min_(T &A,T B) {(A>B) &&(A=B);}
+template<typename T>inline T abs(T a) {return a>0?a:-a;}
+template<typename T>inline T fastgcd(T a, T b) {
+    int az=__builtin_ctz(a),bz=__builtin_ctz(b),z=min(az,bz),diff; b>>=bz;
+    while (a) {
+        a>>=az; diff=b-a; az=__builtin_ctz(diff);
+        min_(b,a); a=abs(diff);
+    }
+    return b<<z;
+}
+int startTime;
+void startTimer() {startTime=clock();}
+void printTimer() {debug("/--- Time: %ld milliseconds ---/\n",clock()-startTime);}
+typedef array<int,4> ar4;
+typedef array<int,3> ar3;
+std::mt19937 rng(time(0));
+std::mt19937_64 rng64(time(0));
+
+// const int mod = 1e9+7;
+const int mod=998244353;
+// int mod=1;
+struct mint {
+    long long x;
+    mint():x(0) {}
+    mint(long long x):x((x%mod+mod)%mod) {}
+    // mint(long long x):x(x){}
+    mint &fix() { x = (x%mod+mod)%mod; return *this;}
+    mint operator-() const { return mint(0) - *this;}
+    mint operator~() const { return mint(1) / *this;}
+    mint &operator+=(const mint &a) { if ((x+=a.x)>=mod) x-=mod; return *this;}
+    mint &operator-=(const mint &a) { if ((x+=mod-a.x)>=mod) x-=mod; return *this;}
+    mint &operator*=(const mint &a) { (x*=a.x)%=mod; return *this;}
+    mint &operator/=(const mint &a) { (x*=a.pow(mod-2).x)%=mod; return *this;}
+    mint operator+(const mint &a)const { return mint(*this) += a;}
+    mint operator-(const mint &a)const { return mint(*this) -= a;}
+    mint operator*(const mint &a)const { return mint(*this) *= a;}
+    mint operator/(const mint &a)const { return mint(*this) /= a;}
+    mint pow(long long t) const {
+        mint ret=1,cur=x;
+        for (;t;t>>=1ll,cur=cur*cur)
+            if (t&1) ret=ret*cur;
+        return ret;
+    }
+    bool operator<(const mint &a)const { return x < a.x;}
+    bool operator==(const mint &a)const { return x == a.x;}
+};
+// struct comb {
+//     vector<mint> f, g; // f:fac; g:inv
+//     comb() {}
+//     comb(int mx):f(mx+1),g(mx+1) {
+//         f[0] = 1;
+//         rREP_(i,mx) f[i] = f[i-1]*i;
+//         g[mx] = f[mx].pow(mod-2);
+//         for (int i=mx; i>0; i--) g[i-1] = g[i]*i;
+//     }
+//     mint operator()(int a, int b) {
+//         if (a < b) return 0;
+//         return f[a]*g[b]*g[a-b];
+//     }
+// } C(maxn);
+
+// ai<aj; ai<1000; bi=
+int A[maxn],B[maxn];
+vector<int> P[maxn];
+ll cnt[maxn];
+int main() {
+    int T,_; T=1;
+    scanf("%d",&T);
+    FOR(_,1,T){
+        ll ans=0;
+        int n;
+        scanf("%d",&n);
+        FOR_(i,1,n) scanf("%d",&A[i]);
+        FOR_(i,1,n) scanf("%d",&B[i]);
+        FOR_(i,1,n) {assert(A[i]<=n); assert(B[i]<=n);}
+        // FOR_(i,1,n) A[i]=rand()%5+1,B[i]=rand()%5+1;
+        FOR_(i,1,n*2) P[i].clear();
+        FOR_(i,1,n) P[A[i]].push_back(B[i]);
+        FOR_(i,1,n) {
+            // FOR_(j,1,2*n) printf("%d ",cnt[j]); puts("<- zero");
+            rFOR_(j,i,2*n/i) {
+                // printf("solve %d %d\n",i,j);
+                if (j!=i) {
+                    for (int v:P[j]) if (i*j-v>=1) cnt[i*j-v]++;
+                } else {
+                    for (int v:P[j]) {
+                        ans+=cnt[v];
+                        if (i*j-v>=1) cnt[i*j-v]++;
+                    }
+                }
+            }
+            // FOR_(j,1,2*n) printf("%d ",cnt[j]); puts("<- cnt");
+            FOR_(j,i,2*n/i) {
+                for (int v:P[j]) if (i*j-v>=1) cnt[i*j-v]--;
+            }
+        }
+        printf("%lld\n",ans);
+        // FOR_(i,1,n) FOR_(j,i+1,n) if ((ll)A[i]*A[j]==B[i]+B[j]) ans++;
+        // printf("%lld\n",ans);
+    }
+}
+/*
+10
+3
+2 3 2
+3 3 1
+8
+4 2 8 2 1 2 7 5
+3 5 8 8 1 1 6 5
+8
+4 4 8 8 8 8 8 8
+8 8 8 8 8 8 8 8
+3
+2 2 2
+2 2 2
+4
+3 1 1 1
+1 2 3 4
+*/

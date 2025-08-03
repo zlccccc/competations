@@ -1,0 +1,89 @@
+#include <cstdio>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <set>
+#include <map>
+#include <string>
+#include <cstring>
+#include <stack>
+#include <queue>
+#include <cmath>
+#include <ctime>
+#include <utility>
+#include <cassert>
+using namespace std;
+#define REP(I,N) for (I=0;I<N;I++)
+#define rREP(I,N) for (I=N-1;I>=0;I--)
+#define rep(I,S,N) for (I=S;I<N;I++)
+#define rrep(I,S,N) for (I=N-1;I>=S;I--)
+#define FOR(I,S,N) for (I=S;I<=N;I++)
+#define rFOR(I,S,N) for (I=N;I>=S;I--)
+#define dbg(x) cout <<#x<<" = "<<x<<" ;  "
+#define dbgln(x) cout <<#x<<" = "<<x<<endl
+typedef unsigned long long ULL;
+typedef long long LL;
+const int INF=0x3f3f3f3f;
+const LL INFF=0x3f3f3f3f3f3f3f3fll;
+const LL M=1e9+7;
+const LL maxn=1e6+7;
+const double eps=0.00000001;
+LL gcd(LL a, LL b) {return b?gcd(b,a%b):a;}
+template<typename T>inline T abs(T a) {return a>0?a:-a;}
+template<typename T>inline T powMM(T a, T b) {
+	T ret=1;
+	for (; b; b>>=1ll,a=(LL)a*a%M)
+		if (b&1) ret=(LL)ret*a%M;
+	return ret;
+}
+
+int fa[maxn];
+int A[maxn];
+LL ans;
+inline int getfa(int x){
+    if (fa[x]==x) return x;
+    return fa[x]=getfa(fa[x]);
+}
+inline void update(int u,int v){
+    int x=getfa(u),y=getfa(v);
+    if (x==y) return;
+//    printf("update: %d %d %d\n",u,v,A[u]+A[v]-1);
+    ans+=(A[u]+A[v]-1)*(u&v);
+    A[u]=A[v]=1;
+    fa[x]=y;
+}
+int T;
+int n,m,q;
+char s[maxn];
+bool any[maxn];
+int main() {
+	int i,j;
+    scanf("%d%s",&n,s);
+    REP(i,n) A[i]=s[i]-'0',fa[i]=i;
+    REP(i,n){
+//        不能清零的...不然边数不够......
+//        等价连的点可以不清零
+//        dbgln(i);
+        int zeros=i^(n-1);
+        for (int rev=zeros;;rev=zeros&(rev-1)){
+            int now=zeros^rev;
+            int u=i|now,v=i|rev;
+//            printf("u,v=%d %d;now,rev=%d %d; i=%d\n",u,v,now,rev,i);
+            if (A[u]){
+//                if (any[v]!=-1) update(u,any[v]);
+                if (!any[v]){
+                    for (int p=rev;;p=rev&(p-1)){
+                        any[i|p]=1;
+                        if (A[i|p])
+                            update(u,i|p);
+//                        printf("%d : %d  update %d\n",i,u,i|p);
+                        if (!p) break;
+                    }
+                }
+            }if (!rev) break;
+        }
+    }printf("%lld\n",ans);
+    return 0;
+}
+/*
+*/

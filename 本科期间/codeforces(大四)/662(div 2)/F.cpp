@@ -1,0 +1,173 @@
+#include <sstream>
+#include <fstream>
+#include <cstdio>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <set>
+#include <map>
+#include <string>
+#include <cstring>
+#include <stack>
+#include <queue>
+#include <cmath>
+#include <ctime>
+#include <utility>
+#include <cassert>
+#include <bitset>
+using namespace std;
+#define REP(I,N) for (I=0;I<N;I++)
+#define rREP(I,N) for (I=N-1;I>=0;I--)
+#define rep(I,S,N) for (I=S;I<N;I++)
+#define rrep(I,S,N) for (I=N-1;I>=S;I--)
+#define FOR(I,S,N) for (I=S;I<=N;I++)
+#define rFOR(I,S,N) for (I=N;I>=S;I--)
+
+#define DEBUG
+#ifdef DEBUG
+#define debug(...) fprintf(stderr, __VA_ARGS__)
+#define deputs(str) fprintf(stderr, "%s\n",str)
+#else
+#define debug(...)
+#define deputs(str)
+#endif // DEBUG
+typedef unsigned long long ULL;
+typedef unsigned long long ull;
+typedef unsigned int ui;
+typedef long long LL;
+typedef long long ll;
+typedef pair<int,int> pii;
+typedef pair<ll,ll> pll;
+const int INF=0x3f3f3f3f;
+const LL INFF=0x3f3f3f3f3f3f3f3fll;
+const LL M=1e9+7;
+const LL maxn=1e6+107;
+const double pi=acos(-1.0);
+const double eps=0.0000000001;
+LL gcd(LL a, LL b) {return b?gcd(b,a%b):a;}
+template<typename T>inline void pr2(T x,int k=64) {ll i; REP(i,k) debug("%d",(x>>i)&1); putchar(' ');}
+template<typename T>inline void add_(T &A,int B,ll MOD=M) {A+=B; (A>=MOD) &&(A-=MOD);}
+template<typename T>inline void mul_(T &A,ll B,ll MOD=M) {A=(A*B)%MOD;}
+template<typename T>inline void mod_(T &A,ll MOD=M) {A%=MOD; A+=MOD; A%=MOD;}
+template<typename T>inline void max_(T &A,T B) {(A<B) &&(A=B);}
+template<typename T>inline void min_(T &A,T B) {(A>B) &&(A=B);}
+template<typename T>inline T abs(T a) {return a>0?a:-a;}
+inline ll powMM(ll a, ll b, ll mod=M) {
+    ll ret=1;
+    for (; b; b>>=1ll,a=a*a%mod)
+        if (b&1) ret=ret*a%mod;
+    return ret;
+}
+int startTime;
+void startTimer() {startTime=clock();}
+void printTimer() {debug("/--- Time: %ld milliseconds ---/\n",clock()-startTime);}
+
+char str[maxn],nxt[maxn];
+int dpnow[maxn],dpnxt[maxn];
+int f1[maxn],f2[maxn],f3[maxn],f4[maxn];
+int l[maxn],l_pre[maxn],l_suf[maxn];
+int get(int A[],int l,int r) {
+    if (l>r) return 0;
+    return (A[r]-A[l-1]+M)%M;
+}
+int main() {
+    int _,i,j;
+    int n; scanf("%d",&n);
+    int lpre,lnow;
+    dpnow[1]=1; lpre=lnow=0;
+    FOR(_,1,n) {
+        scanf("%s",nxt+1);
+        lnow=strlen(nxt+1); nxt[lnow+1]=1;
+        rFOR(i,1,lnow+1) {//not same position
+            if (i>lpre||nxt[i]!=str[i+1]) l_suf[i]=i; else l_suf[i]=l_suf[i+1];
+            if (i>lpre||nxt[i]!=str[i-1]) l_pre[i]=i; else l_pre[i]=l_pre[i+1];
+            if (i>lpre||nxt[i]!=str[i]) l[i]=i; else l[i]=l[i+1];
+        }
+        auto cmp=[&](int i,int j) {
+            if (i==lnow+1) return l[1]<j?str[l[1]]<=nxt[l[1]]:str[l_suf[j]+1]<=nxt[l_suf[j]];
+            if (j==lnow+1) return l[1]<i?str[l[1]]<=nxt[l[1]]:str[l_pre[i+1]-1]<=nxt[l_pre[i+1]];
+            if (l[1]<min(i,j)) return str[l[1]]<=nxt[l[1]];
+            if (i<=j) return l_pre[i+1]-1<j?str[l_pre[i+1]-1]<=nxt[l_pre[i+1]]:str[l[j+1]]<=nxt[l[j+1]];
+            if (j<i) return l_suf[j]<i?str[l_suf[j]+1]<=nxt[l_suf[j]]:str[l[i+1]]<=nxt[l[i+1]];
+            return false;
+        };
+        FOR(i,1,lnow+1) {
+            //remove i
+            dpnxt[i]=0; int low=0;
+            if (i!=lnow+1) low=lpre+1;
+            FOR(j,low,lpre+1) {
+                if (i!=lnow+1&&j!=lpre+1) continue;
+                if (cmp(i,j)) add_(dpnxt[i],dpnow[j]);
+            }
+        }
+
+
+        // if (l[1]<min(i,j)) return str[l[1]]<=nxt[l[1]];
+        // if (i<=j) return l_pre[i+1]-1<j?str[l_pre[i+1]-1]<=nxt[l_pre[i+1]]:str[l[j+1]]<=nxt[l[j+1]];
+        // if (j<i) return l_suf[j]<i?str[l_suf[j]+1]<=nxt[l_suf[j]]:str[l[i+1]]<=nxt[l[i+1]];
+        {
+            int j;
+            FOR(j,0,max(lnow+1,lpre+1)) f1[j]=f2[j]=f3[j]=f4[j]=0;
+            FOR(j,1,max(lnow+1,lpre+1)) {
+                if (j==lpre+1) continue;
+                if (j<=lpre+1) f1[j]=dpnow[j];
+                // if (i<=j) return l_pre[i+1]-1<j?str[l_pre[i+1]-1]<=nxt[l_pre[i+1]]:str[l[j+1]]<=nxt[l[j+1]];
+                if (j<=lpre+1&&str[l[j+1]]<=nxt[l[j+1]]) f2[j]=dpnow[j];
+                // if (j<i) return l_suf[j]<i?str[l_suf[j]+1]<=nxt[l_suf[j]]:str[l[i+1]]<=nxt[l[i+1]];
+                if (j<=lpre+1&&str[l_suf[j]+1]<=nxt[l_suf[j]]&&j<=l[1]) {
+                    int l=max(j+1,l_suf[j]+1),r=lnow+1;
+                    if (l<=r) {add_(f3[l],dpnow[j]); add_(f3[r+1],M-dpnow[j]);}
+                }
+                if (j<=lpre+1&&j<=l[1]) {
+                    int l=j+1,r=min(lnow+1,l_suf[j]);
+                    if (l<=r) {add_(f4[l],dpnow[j]); add_(f4[r+1],M-dpnow[j]);}
+                }
+            }
+            FOR(j,1,max(lnow+1,lpre+1)) {
+                add_(f1[j],f1[j-1]); add_(f2[j],f2[j-1]); add_(f3[j],f3[j-1]); add_(f4[j],f4[j-1]);
+            }
+        }
+        FOR(i,1,lnow+1) {
+            //remove i
+            // dpnxt[i]=0;
+            if (i==lnow+1) continue;
+            //i<=j
+            // if (l[1]<min(i,j)) return str[l[1]]<=nxt[l[1]];
+            // FOR(j,1,lpre+1) {
+            //     if (i!=lnow+1&&j!=lpre+1) {
+            //         bool ok=0;
+            //         // if (l[1]<min(i,j)&&str[l[1]]<=nxt[l[1]]) add_(dpnxt[i],dpnow[j]);
+            //         // if (i<=l[1]&&i<=j&&l_pre[i+1]-1<j&&str[l_pre[i+1]-1]<=nxt[l_pre[i+1]]) ok=1;
+            //         // if (i<=l[1]&&i<=j&&l_pre[i+1]-1>=j&&str[l[j+1]]<=nxt[l[j+1]]) ok=1;
+            //         if (_==6&&ok) printf("%d -> %d: %d\n",i,j,dpnow[j]);
+            //         if (ok) add_(dpnxt[i],dpnow[j]);
+            //     }
+            // }
+            // if (l[1]<i&&str[l[1]]<=nxt[l[1]]) add_(dpnxt[i],get(f1,1,lpre+1));
+            // if (i<=j&&l[1]<i) if (str[l[1]]<=nxt[l[1]]) ok=1;
+            if (l[1]<i&&str[l[1]]<=nxt[l[1]]) add_(dpnxt[i],get(f1,i,lpre+1));//0
+            // if (j<i&&l[1]<j) if (str[l[1]]<=nxt[l[1]]) ok=1;
+            if (str[l[1]]<=nxt[l[1]]) add_(dpnxt[i],get(f1,l[1]+1,i-1));
+
+            // if (i<=j) return l_pre[i+1]-1<j?str[l_pre[i+1]-1]<=nxt[l_pre[i+1]]:str[l[j+1]]<=nxt[l[j+1]];
+            // printf("sum %d %d - %d   %d\n",i,max(i,l_pre[i+1]),lpre+1,get(f1,max(i,l_pre[i+1]),lpre+1));
+            if (i<=l[1]&&str[l_pre[i+1]-1]<=nxt[l_pre[i+1]]) add_(dpnxt[i],get(f1,max(i,l_pre[i+1]),lpre+1));//2
+            if (i<=l[1]) add_(dpnxt[i],get(f2,i,min(lpre+1,l_pre[i+1]-1)));
+
+            // if (j<i) return l_suf[j]<i?str[l_suf[j]+1]<=nxt[l_suf[j]]:str[l[i+1]]<=nxt[l[i+1]];
+            add_(dpnxt[i],f3[i]);
+            if (str[l[i+1]]<=nxt[l[i+1]]) add_(dpnxt[i],f4[i]);
+        }
+        // FOR(i,1,lpre+1) printf("%d ",f1[i]); puts("<- f1");
+        FOR(i,1,lpre+1) dpnow[i]=str[i]=0;
+        FOR(i,1,lnow+1) dpnow[i]=dpnxt[i],str[i]=nxt[i]; str[lnow+1]=0;
+        lpre=lnow;
+        // FOR(i,1,lnow+1) printf("%d ",dpnow[i]); puts("<- dpnow");
+    }
+    int ans=0;
+    FOR(i,1,lnow+1) add_(ans,dpnow[i]);
+    printf("%d\n",ans);
+}
+/*
+
+*/

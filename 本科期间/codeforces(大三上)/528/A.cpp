@@ -1,0 +1,91 @@
+#include <sstream>
+#include <fstream>
+#include <cstdio>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <set>
+#include <map>
+#include <string>
+#include <cstring>
+#include <stack>
+#include <queue>
+#include <cmath>
+#include <ctime>
+#include <utility>
+#include <cassert>
+#include <bitset>
+using namespace std;
+#define REP(I,N) for (I=0;I<N;I++)
+#define rREP(I,N) for (I=N-1;I>=0;I--)
+#define rep(I,S,N) for (I=S;I<N;I++)
+#define rrep(I,S,N) for (I=N-1;I>=S;I--)
+#define FOR(I,S,N) for (I=S;I<=N;I++)
+#define rFOR(I,S,N) for (I=N;I>=S;I--)
+
+#define DEBUG
+#ifdef DEBUG
+#define debug(...) fprintf(stderr, __VA_ARGS__)
+#define deputs(str) fprintf(stderr, "%s\n",str)
+#else
+#define debug(...)
+#define deputs(str)
+#endif // DEBUG
+typedef unsigned long long ULL;
+typedef unsigned long long ull;
+typedef unsigned int ui;
+typedef long long LL;
+typedef long long ll;
+typedef pair<int,int> pii;
+typedef pair<ll,ll> pll;
+const int INF=0x3f3f3f3f;
+const LL INFF=0x3f3f3f3f3f3f3f3fll;
+const LL M=1e9+7;
+const LL maxn=5e5+107;
+const double pi=acos(-1.0);
+const double eps=0.0000000001;
+LL gcd(LL a, LL b) {return b?gcd(b,a%b):a;}
+template<typename T>inline void pr2(T x,int k=64) {ll i; REP(i,k) debug("%d",(x>>i)&1); putchar(' ');}
+template<typename T>inline void add_(T &A,int B,ll MOD=M) {A+=B; (A>=MOD) &&(A-=MOD);}
+template<typename T>inline void mul_(T &A,ll B,ll MOD=M) {A=(A*B)%MOD;}
+template<typename T>inline void mod_(T &A,ll MOD=M) {A%=MOD; A+=MOD; A%=MOD;}
+template<typename T>inline void max_(T &A,T B) {(A<B) &&(A=B);}
+template<typename T>inline void min_(T &A,T B) {(A>B) &&(A=B);}
+template<typename T>inline T abs(T a) {return a>0?a:-a;}
+template<typename T>inline T powMM(T a, T b) {
+	T ret=1;
+	for (; b; b>>=1ll,a=(LL)a*a%M)
+		if (b&1) ret=(LL)ret*a%M;
+	return ret;
+}
+int startTime;
+void startTimer() {startTime=clock();}
+void printTimer() {debug("/--- Time: %ld milliseconds ---/\n",clock()-startTime);}
+
+
+vector<pii> ans;
+void transto(int x,int y,int A,int B){
+	int i;
+	FOR(i,min(x,A),max(x,A)) ans.push_back(make_pair(i,y));
+	FOR(i,min(y,B),max(y,B)) ans.push_back(make_pair(A,i));
+	// printf("%d-%d : %d %d\n",x,y,A,B);
+}
+int main() {
+	int x1,x2,x3,y1,y2,y3,minx,miny,maxx,maxy;
+	scanf("%d%d%d%d%d%d",&x1,&y1,&x2,&y2,&x3,&y3);
+	minx=min(min(x1,x2),x3);
+	miny=min(min(y1,y2),y3);
+	maxx=max(max(x1,x2),x3);
+	maxy=max(max(y1,y2),y3);
+	int midx=x1+x2+x3-minx-maxx;
+	int midy=y1+y2+y3-miny-maxy;
+	printf("%d\n",maxy-miny+maxx-minx+1);
+	transto(x1,y1,midx,midy);
+	transto(x2,y2,midx,midy);
+	transto(x3,y3,midx,midy);
+	sort(ans.begin(), ans.end());
+	ans.erase(unique(ans.begin(), ans.end()),ans.end());
+	for (auto now:ans) printf("%d %d\n",now.first,now.second);
+}
+/*
+*/
