@@ -120,8 +120,9 @@ namespace mincostflow {
 }
 int i,j,k;
 int main() {
-    int n,m,s,t;
-    scanf("%d%d%d%d",&n,&m,&s,&t);
+    int n,m;
+    scanf("%d%d",&n,&m);
+    int s=1,t=n;
     mincostflow::init(n);
     FOR(i,1,m) {
         int u,v,c,w;
