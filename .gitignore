@@ -17,7 +17,6 @@ out.txt
 *.output
 *.dpr
 *.ans
-*.pas
 高中-其他
 *.tar.gz
 *.json
