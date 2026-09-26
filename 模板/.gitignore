@@ -1,0 +1,11 @@
+*.in
+*.out
+input.txt
+output.txt
+in.txt
+out.txt
+*.exe
+*.zip
+*.rar
+*pdf
+*.docx
