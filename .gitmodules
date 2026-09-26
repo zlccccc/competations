@@ -1,3 +1,4 @@
-[submodule "模板/昂神板子"]
-	path = 模板/昂神板子
-	url = https://github.com/Sd-Invol/shoka.git
+[submodule "algorithm-templates"]
+	path = 模板
+	url = https://github.com/zlccccc/ACM-Templates-by-zlc1114.git
+	branch = main
