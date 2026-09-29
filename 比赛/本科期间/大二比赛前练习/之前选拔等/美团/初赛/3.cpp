@@ -29,35 +29,40 @@ template<typename T>inline T abs(T a) {return a>0?a:-a;}
 template<typename T>inline T powMM(T a,T b){T ret=1;for (;b;b>>=1ll,a=a*a%M) ret=1ll*ret*a%M;return ret;}
 
 
-LL n,m;
-double T,C;
-LL i,j,k;
-double t[maxn],c[maxn],cc,tt;
-double l,r,mid,mark1,mark2;
-bool judge(double x){
-	double ret=0;
-	REP(i,n) ret+=c[i]*(x-t[i])/(T-x);
-//	printf("%lf %lf %lf\n",x,ret,C);
-	return (ret<=C+eps);
-}
 int main(){
-	scanf("%d",&n);
-	scanf("%lf%lf",&T,&C);
-	l=INFF;r=0;
+	int n,i;
+	LL T,C;
+	scanf("%d%lld%lld",&n,&T,&C);
+	LL minTemp=INFF,maxTemp=-1,sumVolume=0,sumHeat=0;
 	REP(i,n){
-		scanf("%lf%lf",&t[i],&c[i]);
-		l=min(l,t[i]);
-		r=max(r,t[i]);
+		LL t,c;
+		scanf("%lld%lld",&t,&c);
+		minTemp=min(minTemp,t);
+		maxTemp=max(maxTemp,t);
+		sumVolume+=c;
+		sumHeat+=t*c;
 	}
-	if (l+eps<T&&r>T+eps) return 0*puts("Impossible");
-	tt=T*C;cc=C;
-	REP(i,n) tt+=t[i]*c[i],cc+=c[i];
-	tt/=cc;
-	//	printf("%lf %lf   ",tt,cc);
-	REP(i,n) if (abs(tt-T)+eps>abs(t[i]-T)) return 0*puts("Impossible");
-	puts("Possible");
-	if (tt<l) tt=l;
-	printf("%.4lf",tt);
+	if (C==0){
+		if (minTemp!=maxTemp) puts("Impossible");
+		else printf("Possible\n%lld.0000\n",minTemp);
+		return 0;
+	}
+	if (minTemp==T&&maxTemp==T){
+		printf("Possible\n%lld.0000\n",T);
+		return 0;
+	}
+	if (minTemp<=T&&T<=maxTemp){
+		puts("Impossible");
+		return 0;
+	}
+	LL totalHeat=sumHeat+T*C,totalVolume=sumVolume+C;
+	if (maxTemp<T){
+		if (totalHeat<maxTemp*totalVolume) puts("Impossible");
+		else printf("Possible\n%.4f\n",(double)totalHeat/totalVolume);
+	}else{
+		if (totalHeat>minTemp*totalVolume) puts("Impossible");
+		else printf("Possible\n%lld.0000\n",minTemp);
+	}
 	return 0;
 }
 /*

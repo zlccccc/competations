@@ -70,7 +70,7 @@ int now[17],C[17][17];
 void dfs(int k,const int &end,int cnt) {// k:position
     int i;
     // FOR(i,1,k-1) printf("%d ",now[i]); puts(" <- dfs");
-    if (k>end&&cnt==n) {ans++; return;} // not need cnt==n
+    if (k>end) {ans++; return;}
     FOR(i,1,k) if (!f[k][i]) {
         now[k]=i; int j; bool mark=1;
         FOR(j,1,k-1) if (g[j][k][now[j]][now[k]]) mark=0;
